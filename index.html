@@ -1,0 +1,548 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mystery Host | Hosts a Murder Mystery so you don't have to</title>
+  <meta name="description" content="Hosts a Murder Mystery so you don't have to">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Mystery Host | Hosts a Murder Mystery so you don't have to">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mysteryhost.mamabento.com/">
+  <meta property="og:image" content="">
+
+  <!-- <link rel="manifest" href="site.webmanifest"> -->
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+<style>
+body {
+    background-color:#aaaaaa;
+}
+#mysteryhost .green {
+  color:green;
+  font-weight:bold;
+}
+
+#mysteryhost .spooky {
+  color:darkred;
+  font-weight:bold;
+}
+#mysteryhost .spoiler {
+  background-color:black;
+  color:black;
+
+
+}
+#mysteryhost {
+	position:relative;
+	max-width:500px;
+	width:100%;
+	margin:0 auto;
+	font-size:1.3em;
+	padding:0;
+    /*height: 100vh;*/
+    overflow: auto;
+    background-color:#fafafa;
+}
+#mysteryhost div {
+margin:0.5em 0.5em;
+}
+#mysteryhost div.instructions {
+	text-align:left;
+	font-weight:bold;
+	font-style:italic;
+	color:#0055AA;
+	border:0.5em solid transparent;
+    -webkit-transition : border 1000ms ease-out;
+    -moz-transition : border 1000ms ease-out;
+    -o-transition : border 1000ms ease-out;
+}
+#mysteryhost div.instructions.alert {
+   border-color: green;
+}
+
+#mysteryhost div.words {
+	text-align:center;
+	font-size:1.5em;
+}
+#mysteryhost div.words input {
+	max-width:100%;
+}
+#mysteryhost div.words p.correct {
+    color:green;
+}
+#mysteryhost div.buttons {
+/*
+    position:absolute;
+    bottom:0;
+    width:100%;
+	padding-left:0;
+	padding-right:0;
+	margin-left:0;
+	margin-right:0;
+*/
+    box-sizing: border-box;
+    border:0;
+	text-align:center;
+	margin-top:1em;
+}
+#mysteryhost div.buttons input[type=button] {
+  background-image: linear-gradient(#33AAEE, #1177CC);
+  border: 1px solid #0066BB;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  min-width: 30px;
+  overflow: visible;
+  padding: 4px 15px;
+  text-align: center;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  width:80%;
+  margin:0 auto;
+  height:3em;
+  max-height:25vh;
+
+}
+#mysteryhost div.buttons input[type=button]:disabled {
+  cursor: default;
+  opacity: .3;
+}
+
+#mysteryhost div.buttons input[type=button]:hover {
+  background-image: linear-gradient(#55AAFF, #1188DD);
+  border-color: #0077CC;
+  text-decoration: none;
+}
+
+#mysteryhost div.buttons input[type=button]:active {
+  background-image: linear-gradient(#3399CC, #0066CC);
+  border-color: #0055BB;
+  outline: none;
+}
+
+
+#mysteryhost div.timer {
+	text-align:right;
+	padding:10px;
+	color:black;
+}
+#mysteryhost div.timer.done {
+	color:green;
+}
+
+#about {
+display: none;
+
+}
+</style>
+
+
+  <meta name="theme-color" content="fafafa">
+</head>
+
+<body>
+  <div id="about">
+    <h1>Mystery Host</h1>
+    <desc>I'll host your murder mystery, so you don't have to.</desc>
+    <div class="credits">
+      Web Developer: Mike FitzSimmons <br/>
+    </div>
+  </div>
+
+  <div id="mysteryhost" class="container">
+    <img src="img/Loading_icon.gif"/>
+    <div class="instructions"></div>
+	<div class="words"><img src="img/Loading_icon.gif"/></div>
+    <div class="buttons"></div>
+  </div>
+
+  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/mysteryhost.js"></script>
+
+<script>
+class MysteryHost {
+
+	numPlayers;
+	playerNames = ["","","","","","","","","",""];
+	playerCharacters = [null,null,null,null,null,null,null,null,null,null];
+	container;
+	instructionDiv;
+	wordDiv;
+	buttonDiv;
+	act;
+	whodoneit = null;
+
+    characters = ["Margaret Paige Turner","Bruce Skippy Johnson","Agnes  Paige Turner","Clive Paige Turner","Jacqueline de Montfort","Gregory King","Patrick de Montfort","Louisa de Montfort","Tarquin Uppity","Julia Bishop"];
+    relationships = ["Barbara's daughter","Margaret's lover","Barbara's sister","Barbara's son","Barbara's daughter-in-law, married to Clive","Engaged to Louisa, Barbara's granddaughter","Barbara's grandson","Barbara's granddaughter","Barbara's old friend","Agnes' carer"];
+    plots = ["X","VII","II","VI","III","IV","VIII","V","IX","I"];    
+
+	constructor () {
+		this.#loadSettings();
+		this.#loadFromStorage();
+
+		if (!document.getElementById("mysteryhost")) {
+			let addme = document.createElement("div");
+			addme.id = "mysteryhost";
+			addme.setAttribute("class","container");
+			document.body.append(addme);
+		}
+		this.container = document.getElementById("mysteryhost");
+		this.container.innerHTML = '<div class="instructions"></div>'+"\n"+
+			'<div class="words"><img src="img/Loading_icon.gif"/></div>'+"\n"+
+			'<div class="buttons"></div>'+"\n";
+		this.buttonDiv = this.container.querySelector(".buttons");
+		this.wordDiv = this.container.querySelector(".words");
+		this.instructionDiv = this.container.querySelector(".instructions");
+
+        //adjust for header impeding on viewport
+        let hdiff = window.innerHeight - this.container.offsetHeight;
+//console.log(hdiff + " = " + window.innerHeight +" - "+this.container.offsetHeight);
+        if (hdiff > 0) {
+            this.buttonDiv.style.bottom = hdiff+"px";
+        }
+
+        this.beginAct();
+	}
+
+	beginAct() {
+	  switch(this.act) {
+	    case(1):
+	      this.startActOne();
+	      break;
+	    case(2):
+	      this.startActTwo();
+	      break;
+	    case(3):
+	      this.startActThree();
+	      break;
+	    case(4):
+	      this.startActFour();
+	      break;
+	    default: //act 0
+	      this.getPlayers();
+	  }
+
+	}
+
+	startActOne() {
+      this.instructionDiv.innerHTML = "<h1>Round One</h1><h2>Mingling</h2>"+
+        "Eat, drink, and be merry! Get into character. Read your character sheets and chat with the other guests.";
+	  this.wordDiv.innerHTML = "<table>";
+	  for (let i=0;i<this.numPlayers;i++) {
+	    this.wordDiv.innerHTML += "<tr>"+
+	      "<td class='character'>"+this.characters[playerCharacters[i]]+"</td>"+
+	      "<td class='relationship'>"+this.relationships[playerCharacters[i]]+"</td>"+
+	      "<td class='name'>"+this.playerNames[i]+"</td>"+
+          "</tr>";
+	  }
+	  this.wordDiv.innerHTML += "</table>";
+	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Two'/>";
+      let b8 = this.buttonDiv.querySelector("input.ok");
+      if (b8) { b8.addEventListener("click",() => this.nextRound()); }
+    }
+
+    nextRound() {
+      this.act++;
+      this.#saveToStorage();
+      this.beginAct();
+    }
+
+	startActTwo() {
+      this.instructionDiv.innerHTML = "<h1>Round Two</h1><h2>BARBARA PAIGE TURNER MURDERED!</h2>"+
+        "Read Plot "+this.plots[this.whodoneit]+
+        ", and review the map";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Three'/>";
+      let b9 = this.buttonDiv.querySelector("input.ok");
+      if (b9) { b9.addEventListener("click",() => this.nextRound()); }    }
+    }
+
+	startActThree() {
+      this.instructionDiv.innerHTML = "<h1>Round Three</h1><h2>Interrogation</h2>"+
+        "Question your fellow guests, then write down your accusation.";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Four'/>";
+      let b9 = this.buttonDiv.querySelector("input.ok");
+      if (b9) { b9.addEventListener("click",() => this.nextRound()); }    }
+    }
+
+	startActFour() {
+      this.instructionDiv.innerHTML = "<h1>Round Four</h1><h2>Solutions & Confessions</h2>"+
+        "Read the accusations. The murderer should confess in the way of their choosing."+
+        "<br/><br/><div class="spoiler">The murderer was "+this.playerCharacters[this.whodoneit]+", played by "+this.playerNames[this.whodoneit]+"</div>";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "";
+    }
+
+
+	getPlayers() {
+	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>How many guests are there?";
+	  this.wordDiv.innerHTML = "<input type='number' name='numPlayers' id='numPlayers' min='3' max='10'/>";
+	  this.buttonDiv.innerHTML = "<input type='button' class='start' value='Begin the Game'/>";
+	  if (this.numPlayers) {
+        let np = document.getElementById("numPlayers");
+        np.value = this.numPlayers;
+      }
+      let b1 = this.buttonDiv.querySelector("input.start");
+      if (b1) { b1.addEventListener("click",() => this.startPlayers()); }
+
+    }
+
+    startPlayers() {
+      let npval;
+      let np = document.getElementById("numPlayers");
+      if (np) {
+        npval = np.value;
+        if (npval >=3 && npval <=10) {
+          this.numPlayers = npval;
+        }
+      }
+      this.#saveToStorage();
+      if (!(this.numPlayers >=3 && this.numPlayers <=10)) {
+        this.getPlayers();
+        return;
+      }
+      //assign who done it
+      this.whodoneit = this.whodoneit === null ? Math.floor(Math.random() * this.numPlayers) : this.whodoneit;
+
+      this.assignPlayer(0);
+    }
+
+    assignPlayer(thisplayer) {
+      this.#saveToStorage();
+      let guest = 1+thisplayer;
+	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>You are guest number"+
+	    guest+
+	    " out of "+
+	    this.numPlayers+
+	    "<br/>What is your name?";
+	  this.wordDiv.innerHTML = "<input type='test' name='player["+thisplayer+"]' id='playerName' value='"+this.playerNames[thisplayer]+"'/>";
+	  this.buttonDiv.innerHTML = "<input type='button' class='start' value='Submit name'/>";
+      let b2 = this.buttonDiv.querySelector("input.start");
+      if (b2) { b2.addEventListener("click",() => this.assignCharacter(thisplayer)); }
+	}
+
+    assignCharacter(thisplayer) {
+      let pnval;
+      let pn = document.getElementById("playerName");
+      if (pn) {
+        pnval = pn.value;
+        if (pnval.length > 0) {
+          this.playerNames[thisplayer] = pnval;
+        }
+      }
+
+      this.#saveToStorage();
+      if (!(this.playerNames[thisplayer].length > 0)) {
+        this.assignPlayer(thisplayer);
+        return;
+      }
+
+      if (this.playerCharacters[thisplayer] == null) {
+        this.playerCharacters[thisplayer] = this.randCharacter();
+      }
+
+	  this.instructionDiv.innerHTML = "Welcome, "+this.playerNames[thisplayer]+".<br/>"+
+	  	    "Your character is <span class='charname'>"+
+	  	    this.characters[this.playerCharacters[thisplayer]]+
+	  	    "</span>.<br/>"+
+	  	    "If you're unhappy with this selection, you may reroll your character. Otherwise, continue to reveal whether you are the murderer.";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='reroll' value='Reroll'/><input type='button' class='continue' value='Continue'/>";
+      let b3 = this.buttonDiv.querySelector("input.reroll");
+      if (b3) { b3.addEventListener("click",() => this.reroll(thisplayer)); }
+      let b4 = this.buttonDiv.querySelector("input.continue");
+      if (b4) { b4.addEventListener("click",() => this.assignMurderer(thisplayer)); }
+
+    }
+
+    assignMurderer(thisplayer) {
+      this.#saveToStorage();
+      this.instructionDiv.innerHTML = "Greetings to you, <span class='charname'>"+
+	  	    this.characters[this.playerCharacters[thisplayer]]+
+	  	    "</span>.<br/>"+
+	  	    "Are you in private?";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='yes' value='yes'/>";
+      let b5 = this.buttonDiv.querySelector("input.yes");
+      if (b5) { b5.addEventListener("click",() => this.revealMurderer(thisplayer)); }
+    }
+    revealMurderer(thisplayer) {
+      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "You <span class='spooky'>are</span> the murderer" : "You <span class='green'>are not</span> the murderer";
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
+      let b6 = this.buttonDiv.querySelector("input.ok");
+      if (b6) { b6.addEventListener("click",() => this.passTheComp(thisplayer)); }
+    }
+
+    passTheComp(thisplayer) {
+      thisplayer++;
+	  this.wordDiv.innerHTML = "";
+	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
+      let b7 = this.buttonDiv.querySelector("input.ok");
+      if (thisplayer>=numPlayers) {
+        this.act = 1;
+        this.instructionDiv.innerHTML = "You are done, and all the guests have been greeted. Continue to the game.";
+        if (b7) { b6.addEventListener("click",() => this.beginAct()); }
+      } else {
+        this.instructionDiv.innerHTML = "You are done. Please pass the computer to the next player.";
+        if (b7) { b6.addEventListener("click",() => this.assignPlayer(thisplayer)); }
+      }
+    }
+
+    randCharacter() {
+      let supp = Math.floor(Math.random() * this.numPlayers);
+      return this.playerCharacters.includes(supp) ? randCharacter() : supp;
+    }
+
+    reroll(thisplayer) {
+        this.playerCharacters[thisplayer] = null;
+        this.assignCharacter(thisplayer);
+    }
+
+
+	static formatTime(elapsed) {
+		let displayTime = elapsed+" seconds";
+		let seconds = elapsed % 60;
+		let minutes = parseInt(elapsed/60) % 60;
+		let hours = parseInt(minutes/3600);
+		if (hours > 0) {
+			displayTime = hours.toString() + ":" + minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
+		} else {
+			displayTime = minutes.toString().padStart(1, '0') + ":" + seconds.toString().padStart(2, '0');
+		}
+		return displayTime;
+	}
+	static secondsToWords(elapsed) {
+		if (!(elapsed>0)) { return "no time"; }
+		let displayTime = "";
+		let seconds = elapsed % 60;
+		let minutes = parseInt(elapsed/60) % 60;
+		let hours = parseInt(elapsed/3600);
+		let separator = (hours>0 && minutes>0 && seconds>0 ? "," : "");
+		if (hours > 0) {
+			displayTime += hours.toString() + " hour";
+			displayTime += (hours > 1 ? "s" : "");
+			displayTime += separator;
+			if (minutes > 0) {
+				displayTime += (seconds > 0 ? " " : " and ");
+			} else {
+				displayTime += (seconds > 0 ? " and " : "");
+			}
+		}
+		if (minutes > 0) {
+			displayTime += minutes.toString() + " minute";
+			displayTime += (minutes > 1 ? "s" : "");
+			displayTime += separator;
+			displayTime += (seconds > 0 ? " and " : "");
+		}
+		if (seconds > 0) {
+			displayTime += seconds.toString() + " second";
+			displayTime += (seconds > 1 ? "s" : "");
+		}
+		return displayTime;
+	}
+
+	showWords() {
+		if (this.mywords) {
+			this.words = "<p>"+this.mywords.join("</p><p>")+"</p>";
+		} else {
+			this.words = "";
+		}
+	}
+	hideWords() {
+		this.words = "";
+	}
+	getMatch(word, begenerous = false) {
+//console.log("getMatch("+word+")");
+	  let matchedword = false;
+	  word = word.trim().toLowerCase();
+
+	  if (begenerous && this.bigDictionary.includes(word)) { begenerous = false; } //do not allow for misspellings if it is already a word
+	  if (begenerous) { var howsimilar = []; }
+      for (let i = 0; i < this.mywords.length; i++) {
+//console.log("Check against "+this.mywords[i]);
+	    if (this.mywords[i] == word) {
+//console.log("That's a Bingo!");
+	      return this.mywords[i];
+	    }
+      }
+      if (begenerous) { //allow for mispelings [sic]
+        for (let i = 0; i < this.mywords.length; i++) {
+          if (StringCompare.soundAlike(this.mywords[i],word)) {
+	        howsimilar[i] = StringCompare.similarity(this.mywords[i],word);
+	      } else {
+	        howsimilar[i] = 0;
+	      }
+        }
+//console.log(howsimilar);
+        let maxval = Math.max(...howsimilar);
+        if (maxval >= this.similarityThreshold) {
+          matchedword = this.mywords[howsimilar.indexOf(maxval)];
+        }
+      }
+	  return matchedword;
+	}
+
+	#saveToStorage() {
+		localStorage.setItem("numPlayers", this.numPlayers);
+		localStorage.setItem("playerNames", JSON.stringify(this.playerNames));
+		localStorage.setItem("playerCharacters", JSON.stringify(this.playerCharacters));
+		localStorage.setItem("act", this.act);
+		localStorage.setItem("whodoneit", this.whodoneit);
+	}
+	#loadFromStorage() {
+		let numPlayers = localStorage.getItem("numPlayers");
+		this.numPlayers = numPlayers ? numPlayers : this.numPlayers;
+        let playerNames = JSON.parse(localStorage.getItem("playerNames"));
+		this.playerNames = playerNames ? playerNames : this.playerNames;
+        let playerCharacters = JSON.parse(localStorage.getItem("playerCharacters"));
+		this.playerCharacters = playerCharacters ? playerCharacters : this.playerCharacters;
+		let act = localStorage.getItem("act");
+		this.act = act ? act : this.act;
+		let whodoneit = localStorage.getItem("whodoneit");
+		this.whodoneit = whodoneit ? whodoneit : this.whodoneit;
+	}
+	#saveSettings() {
+		//localStorage.setItem("numPlayers", this.numPlayers);
+		//localStorage.setItem("act", this.act);
+	}
+	#loadSettings() {
+		//let numPlayers = localStorage.getItem("numPlayers");
+		//this.numPlayers = numPlayers ? numPlayers : this.numPlayers;
+		//let act = localStorage.getItem("act");
+		//this.act = act ? act : this.act;
+	}
+
+}
+
+
+window.onload = (function() {
+	var mystery = new MysteryHost();
+});
+</script>
+
+<!-- Google tag (gtag.js) -->
+<!--
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L86C91Y24D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L86C91Y24D');
+</script>
+-->
+</body>
+
+</html>
