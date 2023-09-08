@@ -26,6 +26,10 @@ body {
   font-weight:bold;
 }
 
+#mysteryhost .charname {
+  color:black;
+}
+
 #mysteryhost .spooky {
   color:darkred;
   font-weight:bold;
@@ -53,7 +57,7 @@ margin:0.5em 0.5em;
 #mysteryhost div.instructions {
 	text-align:left;
 	font-weight:bold;
-	font-style:italic;
+	/*font-style:italic;*/
 	color:#0055AA;
 	border:0.5em solid transparent;
     -webkit-transition : border 1000ms ease-out;
@@ -159,10 +163,12 @@ display: none;
   </div>
 
   <div id="mysteryhost" class="container">
+    <form id="mhform" onsubmit="return false;">
     <img src="img/Loading_icon.gif"/>
     <div class="instructions"></div>
 	<div class="words"><img src="img/Loading_icon.gif"/></div>
     <div class="buttons"></div>
+    </form>
   </div>
 
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
@@ -173,6 +179,7 @@ display: none;
 class MysteryHost {
 
 	numPlayers;
+	gotPlayers;
 	playerNames = ["","","","","","","","","",""];
 	playerCharacters = [null,null,null,null,null,null,null,null,null,null];
 	container;
@@ -198,8 +205,10 @@ class MysteryHost {
 		}
 		this.container = document.getElementById("mysteryhost");
 		this.container.innerHTML = '<div class="instructions"></div>'+"\n"+
+		    '<form id="mhform" onsubmit="return false;">'+"\n"+
 			'<div class="words"><img src="img/Loading_icon.gif"/></div>'+"\n"+
-			'<div class="buttons"></div>'+"\n";
+			'<div class="buttons"></div>'+"\n"+
+		    '</form>'+"\n";
 		this.buttonDiv = this.container.querySelector(".buttons");
 		this.wordDiv = this.container.querySelector(".words");
 		this.instructionDiv = this.container.querySelector(".instructions");
@@ -211,13 +220,16 @@ class MysteryHost {
             this.buttonDiv.style.bottom = hdiff+"px";
         }
 
+        //set 'enter' key to trigger first button
+
         this.beginAct();
 	}
 
 	beginAct() {
+	  this.#saveToStorage();
 	  switch(this.act) {
 	    case(1):
-	      this.startActOne();
+          this.startActOne();
 	      break;
 	    case(2):
 	      this.startActTwo();
@@ -229,7 +241,12 @@ class MysteryHost {
 	      this.startActFour();
 	      break;
 	    default: //act 0
-	      this.getPlayers();
+          //resume where we left off
+          if (this.gotPlayers > 0) {
+            this.assignCharacter(this.gotPlayers);
+          } else {
+            this.getPlayers();
+          }
 	  }
 
 	}
@@ -240,8 +257,8 @@ class MysteryHost {
 	  this.wordDiv.innerHTML = "<table>";
 	  for (let i=0;i<this.numPlayers;i++) {
 	    this.wordDiv.innerHTML += "<tr>"+
-	      "<td class='character'>"+this.characters[playerCharacters[i]]+"</td>"+
-	      "<td class='relationship'>"+this.relationships[playerCharacters[i]]+"</td>"+
+	      "<td class='character'>"+this.characters[this.playerCharacters[i]]+"</td>"+
+	      "<td class='relationship'>"+this.relationships[this.playerCharacters[i]]+"</td>"+
 	      "<td class='name'>"+this.playerNames[i]+"</td>"+
           "</tr>";
 	  }
@@ -264,7 +281,7 @@ class MysteryHost {
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Three'/>";
       let b9 = this.buttonDiv.querySelector("input.ok");
-      if (b9) { b9.addEventListener("click",() => this.nextRound()); }    }
+      if (b9) { b9.addEventListener("click",() => this.nextRound()); }
     }
 
 	startActThree() {
@@ -273,13 +290,13 @@ class MysteryHost {
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Four'/>";
       let b9 = this.buttonDiv.querySelector("input.ok");
-      if (b9) { b9.addEventListener("click",() => this.nextRound()); }    }
+      if (b9) { b9.addEventListener("click",() => this.nextRound()); }
     }
 
 	startActFour() {
       this.instructionDiv.innerHTML = "<h1>Round Four</h1><h2>Solutions & Confessions</h2>"+
         "Read the accusations. The murderer should confess in the way of their choosing."+
-        "<br/><br/><div class="spoiler">The murderer was "+this.playerCharacters[this.whodoneit]+", played by "+this.playerNames[this.whodoneit]+"</div>";
+        "<br/><br/><div class='spoiler'>The murderer was "+this.playerCharacters[this.whodoneit]+", played by "+this.playerNames[this.whodoneit]+"</div>";
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "";
     }
@@ -312,6 +329,7 @@ class MysteryHost {
         this.getPlayers();
         return;
       }
+      this.gotPlayers = 0;
       //assign who done it
       this.whodoneit = this.whodoneit === null ? Math.floor(Math.random() * this.numPlayers) : this.whodoneit;
 
@@ -321,7 +339,7 @@ class MysteryHost {
     assignPlayer(thisplayer) {
       this.#saveToStorage();
       let guest = 1+thisplayer;
-	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>You are guest number"+
+	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>You are guest number "+
 	    guest+
 	    " out of "+
 	    this.numPlayers+
@@ -358,7 +376,7 @@ class MysteryHost {
 	  	    "</span>.<br/>"+
 	  	    "If you're unhappy with this selection, you may reroll your character. Otherwise, continue to reveal whether you are the murderer.";
 	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='reroll' value='Reroll'/><input type='button' class='continue' value='Continue'/>";
+	  this.buttonDiv.innerHTML = "<input type='button' class='continue' value='Continue'/><br/><input type='button' class='reroll' value='Reroll'/>";
       let b3 = this.buttonDiv.querySelector("input.reroll");
       if (b3) { b3.addEventListener("click",() => this.reroll(thisplayer)); }
       let b4 = this.buttonDiv.querySelector("input.continue");
@@ -373,7 +391,7 @@ class MysteryHost {
 	  	    "</span>.<br/>"+
 	  	    "Are you in private?";
 	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='yes' value='yes'/>";
+	  this.buttonDiv.innerHTML = "<input type='button' class='yes' value='Yes'/>";
       let b5 = this.buttonDiv.querySelector("input.yes");
       if (b5) { b5.addEventListener("click",() => this.revealMurderer(thisplayer)); }
     }
@@ -387,22 +405,23 @@ class MysteryHost {
 
     passTheComp(thisplayer) {
       thisplayer++;
+      this.gotPlayers++;
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
       let b7 = this.buttonDiv.querySelector("input.ok");
-      if (thisplayer>=numPlayers) {
+      if (thisplayer>=this.numPlayers) {
         this.act = 1;
         this.instructionDiv.innerHTML = "You are done, and all the guests have been greeted. Continue to the game.";
-        if (b7) { b6.addEventListener("click",() => this.beginAct()); }
+        if (b7) { b7.addEventListener("click",() => this.beginAct()); }
       } else {
         this.instructionDiv.innerHTML = "You are done. Please pass the computer to the next player.";
-        if (b7) { b6.addEventListener("click",() => this.assignPlayer(thisplayer)); }
+        if (b7) { b7.addEventListener("click",() => this.assignPlayer(thisplayer)); }
       }
     }
 
     randCharacter() {
       let supp = Math.floor(Math.random() * this.numPlayers);
-      return this.playerCharacters.includes(supp) ? randCharacter() : supp;
+      return this.playerCharacters.includes(supp) ? this.randCharacter() : supp;
     }
 
     reroll(thisplayer) {
@@ -496,6 +515,7 @@ class MysteryHost {
 
 	#saveToStorage() {
 		localStorage.setItem("numPlayers", this.numPlayers);
+		localStorage.setItem("gotPlayers", this.gotPlayers);
 		localStorage.setItem("playerNames", JSON.stringify(this.playerNames));
 		localStorage.setItem("playerCharacters", JSON.stringify(this.playerCharacters));
 		localStorage.setItem("act", this.act);
@@ -504,6 +524,8 @@ class MysteryHost {
 	#loadFromStorage() {
 		let numPlayers = localStorage.getItem("numPlayers");
 		this.numPlayers = numPlayers ? numPlayers : this.numPlayers;
+		let gotPlayers = localStorage.getItem("gotPlayers");
+		this.gotPlayers = gotPlayers ? gotPlayers : this.gotPlayers;
         let playerNames = JSON.parse(localStorage.getItem("playerNames"));
 		this.playerNames = playerNames ? playerNames : this.playerNames;
         let playerCharacters = JSON.parse(localStorage.getItem("playerCharacters"));
