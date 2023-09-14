@@ -243,7 +243,7 @@ class MysteryHost {
 	    default: //act 0
           //resume where we left off
           if (this.gotPlayers > 0) {
-            this.assignCharacter(this.gotPlayers);
+            this.assignPlayer(this.gotPlayers);
           } else {
             this.getPlayers();
           }
@@ -256,6 +256,7 @@ class MysteryHost {
         "Eat, drink, and be merry! Get into character. Read your character sheets and chat with the other guests.";
 	  this.wordDiv.innerHTML = "<table>";
 	  for (let i=0;i<this.numPlayers;i++) {
+console.log(i);
 	    this.wordDiv.innerHTML += "<tr>"+
 	      "<td class='character'>"+this.characters[this.playerCharacters[i]]+"</td>"+
 	      "<td class='relationship'>"+this.relationships[this.playerCharacters[i]]+"</td>"+
@@ -338,7 +339,7 @@ class MysteryHost {
 
     assignPlayer(thisplayer) {
       this.#saveToStorage();
-      let guest = 1+thisplayer;
+      let guest = 1*1+thisplayer;
 	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>You are guest number "+
 	    guest+
 	    " out of "+
@@ -396,7 +397,7 @@ class MysteryHost {
       if (b5) { b5.addEventListener("click",() => this.revealMurderer(thisplayer)); }
     }
     revealMurderer(thisplayer) {
-      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "You <span class='spooky'>are</span> the murderer" : "You <span class='green'>are not</span> the murderer";
+      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "You <span class='spooky'>are the murderer</span>" : "You <span class='green'>are not</span> the murderer";
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
       let b6 = this.buttonDiv.querySelector("input.ok");
@@ -523,17 +524,17 @@ class MysteryHost {
 	}
 	#loadFromStorage() {
 		let numPlayers = localStorage.getItem("numPlayers");
-		this.numPlayers = numPlayers ? numPlayers : this.numPlayers;
+		this.numPlayers = parseInt(numPlayers ? numPlayers : this.numPlayers);
 		let gotPlayers = localStorage.getItem("gotPlayers");
-		this.gotPlayers = gotPlayers ? gotPlayers : this.gotPlayers;
+		this.gotPlayers = parseInt(gotPlayers ? gotPlayers : this.gotPlayers);
         let playerNames = JSON.parse(localStorage.getItem("playerNames"));
 		this.playerNames = playerNames ? playerNames : this.playerNames;
         let playerCharacters = JSON.parse(localStorage.getItem("playerCharacters"));
 		this.playerCharacters = playerCharacters ? playerCharacters : this.playerCharacters;
 		let act = localStorage.getItem("act");
-		this.act = act ? act : this.act;
+		this.act = parseInt(act ? act : this.act);
 		let whodoneit = localStorage.getItem("whodoneit");
-		this.whodoneit = whodoneit ? whodoneit : this.whodoneit;
+		this.whodoneit = parseInt(whodoneit ? whodoneit : this.whodoneit);
 	}
 	#saveSettings() {
 		//localStorage.setItem("numPlayers", this.numPlayers);
