@@ -1,4 +1,6 @@
 class MysteryHost {
+//todo:
+//  add scene transitions or a delay so you can't click the button too quickly
 
 	numPlayers;
 	gotPlayers;
@@ -16,7 +18,7 @@ class MysteryHost {
     plots = ["X","VII","II","VI","III","IV","VIII","V","IX","I"];
 
 	constructor () {
-	    //let clicker = this.clickButton;
+        //set 'enter' key to trigger first button
         document.addEventListener("keypress", this.clickButton);
 
         //add reset button
@@ -60,8 +62,6 @@ class MysteryHost {
         if (hdiff > 0) {
             this.buttonDiv.style.bottom = hdiff+"px";
         }
-
-        //set 'enter' key to trigger first button
 
         this.beginAct();
 	}
