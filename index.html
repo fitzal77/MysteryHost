@@ -37,12 +37,43 @@ body {
 #mysteryhost .spoiler {
   background-color:black;
   color:black;
-
+  font-size:1.8em;
+}
+#mysteryhost .spoiler::highlight {
+  background-color:#555;
+  color:white;
+}
+#mysteryhost table.characters {
+  width:100%;
+  border-collapse:collapse;
 
 }
+#mysteryhost table.characters td {
+  border-bottom: 2px solid gray;
+  vertical-align:bottom;
+}
+#mysteryhost table.characters .character {
+  text-align:right;
+
+}
+#mysteryhost table.characters .relationship {
+  text-align:left;
+  padding-left:15px;
+  font-size: 0.85em;
+  color:#444;
+  border-bottom-style:dotted;
+}
+#mysteryhost table.characters .name {
+  text-align:right;
+  border-bottom-style:dotted;
+  color:blue;
+
+}
+
+
 #mysteryhost {
 	position:relative;
-	max-width:500px;
+	max-width:800px;
 	width:100%;
 	margin:0 auto;
 	font-size:1.3em;
@@ -52,7 +83,7 @@ body {
     background-color:#fafafa;
 }
 #mysteryhost div {
-margin:0.5em 0.5em;
+  margin:0.5em 0.5em;
 }
 #mysteryhost div.instructions {
 	text-align:left;
@@ -70,13 +101,13 @@ margin:0.5em 0.5em;
 
 #mysteryhost div.words {
 	text-align:center;
-	font-size:1.5em;
+	font-size:1em;
+}
+#mysteryhost .center {
+	text-align:center;
 }
 #mysteryhost div.words input {
 	max-width:100%;
-}
-#mysteryhost div.words p.correct {
-    color:green;
 }
 #mysteryhost div.buttons {
 /*
@@ -147,6 +178,119 @@ margin:0.5em 0.5em;
 display: none;
 
 }
+#mhreset {
+
+}
+menu, ul {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  background-color:white;
+
+}
+
+li {
+  flex-basis: 15%;
+
+
+}
+
+button {
+  width: 100%;
+}
+
+#veil {
+  display: none;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top:0;
+  left:0;
+  padding:0;
+  border:none;
+  z-index:98;
+  background-color:rgba(50, 50, 50, 0.5);
+}
+#about {
+  display: none;
+  position: absolute;
+  width: 62%;
+  min-width:200px;
+  height:80%;
+  min-height:200px;
+  background:#FFF;
+  color:black;
+  /*box-shadow: 0px 0px 0px 5000px rgba(50, 50, 50, 0.5);*/
+  box-shadow: 3px 3px 15px 1px rgba(50, 50, 50, 1);
+  z-index:99;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow-y:scroll;
+  overflow-x:hidden;
+  padding-bottom:100px;
+}
+#about>div {
+  margin-left:1em;
+  margin-right:1em;
+}
+
+#reset-button {
+  position: absolute;
+  top:0;
+  right:0;
+  padding:0;
+  margin:0;
+}
+#mhreset {
+  color:darkred;
+  font-size: 24px;
+  line-height:40px;
+  padding:0 10px;
+  margin:0;
+  border:1px solid darkred;
+  border-radius:0;
+  background-color:#ddd;
+
+}
+
+#menu-button {
+  position: absolute;
+  top:0;
+  left:0;
+}
+.burger { /* menu button */
+  fill: #1177CC;
+  border:none;
+}
+.burger:hover {
+  fill: #2288DD;
+}
+button {
+  cursor: pointer;
+}
+#close-button {
+  position:absolute;
+  right:0;
+  margin:10px;
+}
+
+.show {
+  display:block !IMPORTANT;
+}
+
+a.external-link:after {
+  content: url('data:image/svg+xml;utf8,<svg width="10px" height="10px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><g xmlns="http://www.w3.org/2000/svg" id="external-link"><path d="M36.026,20.058l-21.092,0c-1.65,0 -2.989,1.339 -2.989,2.989l0,25.964c0,1.65 1.339,2.989 2.989,2.989l26.024,0c1.65,0 2.989,-1.339 2.989,-2.989l0,-20.953l3.999,0l0,21.948c0,3.308 -2.686,5.994 -5.995,5.995l-28.01,0c-3.309,0 -5.995,-2.687 -5.995,-5.995l0,-27.954c0,-3.309 2.686,-5.995 5.995,-5.995l22.085,0l0,4.001Z"/><path d="M55.925,25.32l-4.005,0l0,-10.481l-27.894,27.893l-2.832,-2.832l27.895,-27.895l-10.484,0l0,-4.005l17.318,0l0.002,0.001l0,17.319Z"/></g></svg>');
+  fill:black;
+  vertical-align:text-top;
+  line-height: 12px;
+}
+
+
 </style>
 
 
@@ -154,14 +298,41 @@ display: none;
 </head>
 
 <body>
+  <header>
+    <div id="menu-button">
+      <button type="button" id="burger" class="burger"><svg viewBox="0 0 100 80" width="40" height="40">
+        <rect width="100" height="20"></rect>
+        <rect y="30" width="100" height="20"></rect>
+        <rect y="60" width="100" height="20"></rect>
+      </svg></button>
+    </div>
+    <div id="reset-button">
+      <button type="button" id="mhreset" class="mhreset">Reset</button>
+    </div>
+  </header>
+
+  <div id="veil"></div>
   <div id="about">
-    <h1>Mystery Host</h1>
-    <desc>I'll host your murder mystery, so you don't have to.</desc>
-    <div class="credits">
-      Web Developer: Mike FitzSimmons <br/>
+    <div class="container">
+      <div id="close-button"><button type="button" class="close">&#x2716;</button></div>
+      <h1>Mystery Host</h1>
+      <h2>About</h2>
+      <div class="description">
+        I'll host your murder mystery, so you don't have to. Requires map and game booklet from "Complete Murder Mystery Night" by The Lagoon Group. Unaffiliated with The Lagoon Group.  Recommended for ages 14+.
+      </div>
+      <h2>Credits</h2>
+      <div class="credits">
+        <p>Web Developer: Mike FitzSimmons | <a href="https://mstdn.social/@Fitz" rel="external noopener">@Fitz@mstdn.social</a> | <a href="https://twitter.com/evilfitzal" rel="external">@EvilFitzal</a></p>
+      </div>
     </div>
   </div>
-
+<!--
+  <div id="reset">
+    <div id="close-button"><button type="button" class="close">&#x2716;</button></div>
+    <h2>Reset Game?</h2>
+    <div></div>
+  </div>
+-->
   <div id="mysteryhost" class="container">
     <form id="mhform" onsubmit="return false;">
     <img src="img/Loading_icon.gif"/>
@@ -173,385 +344,16 @@ display: none;
 
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
   <script src="js/mysteryhost.js"></script>
 
 <script>
-class MysteryHost {
-
-	numPlayers;
-	gotPlayers;
-	playerNames = ["","","","","","","","","",""];
-	playerCharacters = [null,null,null,null,null,null,null,null,null,null];
-	container;
-	instructionDiv;
-	wordDiv;
-	buttonDiv;
-	act;
-	whodoneit = null;
-
-    characters = ["Margaret Paige Turner","Bruce Skippy Johnson","Agnes  Paige Turner","Clive Paige Turner","Jacqueline de Montfort","Gregory King","Patrick de Montfort","Louisa de Montfort","Tarquin Uppity","Julia Bishop"];
-    relationships = ["Barbara's daughter","Margaret's lover","Barbara's sister","Barbara's son","Barbara's daughter-in-law, married to Clive","Engaged to Louisa, Barbara's granddaughter","Barbara's grandson","Barbara's granddaughter","Barbara's old friend","Agnes' carer"];
-    plots = ["X","VII","II","VI","III","IV","VIII","V","IX","I"];    
-
-	constructor () {
-		this.#loadSettings();
-		this.#loadFromStorage();
-
-		if (!document.getElementById("mysteryhost")) {
-			let addme = document.createElement("div");
-			addme.id = "mysteryhost";
-			addme.setAttribute("class","container");
-			document.body.append(addme);
-		}
-		this.container = document.getElementById("mysteryhost");
-		this.container.innerHTML = '<div class="instructions"></div>'+"\n"+
-		    '<form id="mhform" onsubmit="return false;">'+"\n"+
-			'<div class="words"><img src="img/Loading_icon.gif"/></div>'+"\n"+
-			'<div class="buttons"></div>'+"\n"+
-		    '</form>'+"\n";
-		this.buttonDiv = this.container.querySelector(".buttons");
-		this.wordDiv = this.container.querySelector(".words");
-		this.instructionDiv = this.container.querySelector(".instructions");
-
-        //adjust for header impeding on viewport
-        let hdiff = window.innerHeight - this.container.offsetHeight;
-//console.log(hdiff + " = " + window.innerHeight +" - "+this.container.offsetHeight);
-        if (hdiff > 0) {
-            this.buttonDiv.style.bottom = hdiff+"px";
-        }
-
-        //set 'enter' key to trigger first button
-
-        this.beginAct();
-	}
-
-	beginAct() {
-	  this.#saveToStorage();
-	  switch(this.act) {
-	    case(1):
-          this.startActOne();
-	      break;
-	    case(2):
-	      this.startActTwo();
-	      break;
-	    case(3):
-	      this.startActThree();
-	      break;
-	    case(4):
-	      this.startActFour();
-	      break;
-	    default: //act 0
-          //resume where we left off
-          if (this.gotPlayers > 0) {
-            this.assignPlayer(this.gotPlayers);
-          } else {
-            this.getPlayers();
-          }
-	  }
-
-	}
-
-	startActOne() {
-      this.instructionDiv.innerHTML = "<h1>Round One</h1><h2>Mingling</h2>"+
-        "Eat, drink, and be merry! Get into character. Read your character sheets and chat with the other guests.";
-	  this.wordDiv.innerHTML = "<table>";
-	  for (let i=0;i<this.numPlayers;i++) {
-console.log(i);
-	    this.wordDiv.innerHTML += "<tr>"+
-	      "<td class='character'>"+this.characters[this.playerCharacters[i]]+"</td>"+
-	      "<td class='relationship'>"+this.relationships[this.playerCharacters[i]]+"</td>"+
-	      "<td class='name'>"+this.playerNames[i]+"</td>"+
-          "</tr>";
-	  }
-	  this.wordDiv.innerHTML += "</table>";
-	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Two'/>";
-      let b8 = this.buttonDiv.querySelector("input.ok");
-      if (b8) { b8.addEventListener("click",() => this.nextRound()); }
-    }
-
-    nextRound() {
-      this.act++;
-      this.#saveToStorage();
-      this.beginAct();
-    }
-
-	startActTwo() {
-      this.instructionDiv.innerHTML = "<h1>Round Two</h1><h2>BARBARA PAIGE TURNER MURDERED!</h2>"+
-        "Read Plot "+this.plots[this.whodoneit]+
-        ", and review the map";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Three'/>";
-      let b9 = this.buttonDiv.querySelector("input.ok");
-      if (b9) { b9.addEventListener("click",() => this.nextRound()); }
-    }
-
-	startActThree() {
-      this.instructionDiv.innerHTML = "<h1>Round Three</h1><h2>Interrogation</h2>"+
-        "Question your fellow guests, then write down your accusation.";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='Continue to Round Four'/>";
-      let b9 = this.buttonDiv.querySelector("input.ok");
-      if (b9) { b9.addEventListener("click",() => this.nextRound()); }
-    }
-
-	startActFour() {
-      this.instructionDiv.innerHTML = "<h1>Round Four</h1><h2>Solutions & Confessions</h2>"+
-        "Read the accusations. The murderer should confess in the way of their choosing."+
-        "<br/><br/><div class='spoiler'>The murderer was "+this.playerCharacters[this.whodoneit]+", played by "+this.playerNames[this.whodoneit]+"</div>";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "";
-    }
-
-
-	getPlayers() {
-	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>How many guests are there?";
-	  this.wordDiv.innerHTML = "<input type='number' name='numPlayers' id='numPlayers' min='3' max='10'/>";
-	  this.buttonDiv.innerHTML = "<input type='button' class='start' value='Begin the Game'/>";
-	  if (this.numPlayers) {
-        let np = document.getElementById("numPlayers");
-        np.value = this.numPlayers;
-      }
-      let b1 = this.buttonDiv.querySelector("input.start");
-      if (b1) { b1.addEventListener("click",() => this.startPlayers()); }
-
-    }
-
-    startPlayers() {
-      let npval;
-      let np = document.getElementById("numPlayers");
-      if (np) {
-        npval = np.value;
-        if (npval >=3 && npval <=10) {
-          this.numPlayers = npval;
-        }
-      }
-      this.#saveToStorage();
-      if (!(this.numPlayers >=3 && this.numPlayers <=10)) {
-        this.getPlayers();
-        return;
-      }
-      this.gotPlayers = 0;
-      //assign who done it
-      this.whodoneit = this.whodoneit === null ? Math.floor(Math.random() * this.numPlayers) : this.whodoneit;
-
-      this.assignPlayer(0);
-    }
-
-    assignPlayer(thisplayer) {
-      this.#saveToStorage();
-      let guest = 1*1+thisplayer;
-	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>You are guest number "+
-	    guest+
-	    " out of "+
-	    this.numPlayers+
-	    "<br/>What is your name?";
-	  this.wordDiv.innerHTML = "<input type='test' name='player["+thisplayer+"]' id='playerName' value='"+this.playerNames[thisplayer]+"'/>";
-	  this.buttonDiv.innerHTML = "<input type='button' class='start' value='Submit name'/>";
-      let b2 = this.buttonDiv.querySelector("input.start");
-      if (b2) { b2.addEventListener("click",() => this.assignCharacter(thisplayer)); }
-	}
-
-    assignCharacter(thisplayer) {
-      let pnval;
-      let pn = document.getElementById("playerName");
-      if (pn) {
-        pnval = pn.value;
-        if (pnval.length > 0) {
-          this.playerNames[thisplayer] = pnval;
-        }
-      }
-
-      this.#saveToStorage();
-      if (!(this.playerNames[thisplayer].length > 0)) {
-        this.assignPlayer(thisplayer);
-        return;
-      }
-
-      if (this.playerCharacters[thisplayer] == null) {
-        this.playerCharacters[thisplayer] = this.randCharacter();
-      }
-
-	  this.instructionDiv.innerHTML = "Welcome, "+this.playerNames[thisplayer]+".<br/>"+
-	  	    "Your character is <span class='charname'>"+
-	  	    this.characters[this.playerCharacters[thisplayer]]+
-	  	    "</span>.<br/>"+
-	  	    "If you're unhappy with this selection, you may reroll your character. Otherwise, continue to reveal whether you are the murderer.";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='continue' value='Continue'/><br/><input type='button' class='reroll' value='Reroll'/>";
-      let b3 = this.buttonDiv.querySelector("input.reroll");
-      if (b3) { b3.addEventListener("click",() => this.reroll(thisplayer)); }
-      let b4 = this.buttonDiv.querySelector("input.continue");
-      if (b4) { b4.addEventListener("click",() => this.assignMurderer(thisplayer)); }
-
-    }
-
-    assignMurderer(thisplayer) {
-      this.#saveToStorage();
-      this.instructionDiv.innerHTML = "Greetings to you, <span class='charname'>"+
-	  	    this.characters[this.playerCharacters[thisplayer]]+
-	  	    "</span>.<br/>"+
-	  	    "Are you in private?";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='yes' value='Yes'/>";
-      let b5 = this.buttonDiv.querySelector("input.yes");
-      if (b5) { b5.addEventListener("click",() => this.revealMurderer(thisplayer)); }
-    }
-    revealMurderer(thisplayer) {
-      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "You <span class='spooky'>are the murderer</span>" : "You <span class='green'>are not</span> the murderer";
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
-      let b6 = this.buttonDiv.querySelector("input.ok");
-      if (b6) { b6.addEventListener("click",() => this.passTheComp(thisplayer)); }
-    }
-
-    passTheComp(thisplayer) {
-      thisplayer++;
-      this.gotPlayers++;
-	  this.wordDiv.innerHTML = "";
-	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
-      let b7 = this.buttonDiv.querySelector("input.ok");
-      if (thisplayer>=this.numPlayers) {
-        this.act = 1;
-        this.instructionDiv.innerHTML = "You are done, and all the guests have been greeted. Continue to the game.";
-        if (b7) { b7.addEventListener("click",() => this.beginAct()); }
-      } else {
-        this.instructionDiv.innerHTML = "You are done. Please pass the computer to the next player.";
-        if (b7) { b7.addEventListener("click",() => this.assignPlayer(thisplayer)); }
-      }
-    }
-
-    randCharacter() {
-      let supp = Math.floor(Math.random() * this.numPlayers);
-      return this.playerCharacters.includes(supp) ? this.randCharacter() : supp;
-    }
-
-    reroll(thisplayer) {
-        this.playerCharacters[thisplayer] = null;
-        this.assignCharacter(thisplayer);
-    }
-
-
-	static formatTime(elapsed) {
-		let displayTime = elapsed+" seconds";
-		let seconds = elapsed % 60;
-		let minutes = parseInt(elapsed/60) % 60;
-		let hours = parseInt(minutes/3600);
-		if (hours > 0) {
-			displayTime = hours.toString() + ":" + minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
-		} else {
-			displayTime = minutes.toString().padStart(1, '0') + ":" + seconds.toString().padStart(2, '0');
-		}
-		return displayTime;
-	}
-	static secondsToWords(elapsed) {
-		if (!(elapsed>0)) { return "no time"; }
-		let displayTime = "";
-		let seconds = elapsed % 60;
-		let minutes = parseInt(elapsed/60) % 60;
-		let hours = parseInt(elapsed/3600);
-		let separator = (hours>0 && minutes>0 && seconds>0 ? "," : "");
-		if (hours > 0) {
-			displayTime += hours.toString() + " hour";
-			displayTime += (hours > 1 ? "s" : "");
-			displayTime += separator;
-			if (minutes > 0) {
-				displayTime += (seconds > 0 ? " " : " and ");
-			} else {
-				displayTime += (seconds > 0 ? " and " : "");
-			}
-		}
-		if (minutes > 0) {
-			displayTime += minutes.toString() + " minute";
-			displayTime += (minutes > 1 ? "s" : "");
-			displayTime += separator;
-			displayTime += (seconds > 0 ? " and " : "");
-		}
-		if (seconds > 0) {
-			displayTime += seconds.toString() + " second";
-			displayTime += (seconds > 1 ? "s" : "");
-		}
-		return displayTime;
-	}
-
-	showWords() {
-		if (this.mywords) {
-			this.words = "<p>"+this.mywords.join("</p><p>")+"</p>";
-		} else {
-			this.words = "";
-		}
-	}
-	hideWords() {
-		this.words = "";
-	}
-	getMatch(word, begenerous = false) {
-//console.log("getMatch("+word+")");
-	  let matchedword = false;
-	  word = word.trim().toLowerCase();
-
-	  if (begenerous && this.bigDictionary.includes(word)) { begenerous = false; } //do not allow for misspellings if it is already a word
-	  if (begenerous) { var howsimilar = []; }
-      for (let i = 0; i < this.mywords.length; i++) {
-//console.log("Check against "+this.mywords[i]);
-	    if (this.mywords[i] == word) {
-//console.log("That's a Bingo!");
-	      return this.mywords[i];
-	    }
-      }
-      if (begenerous) { //allow for mispelings [sic]
-        for (let i = 0; i < this.mywords.length; i++) {
-          if (StringCompare.soundAlike(this.mywords[i],word)) {
-	        howsimilar[i] = StringCompare.similarity(this.mywords[i],word);
-	      } else {
-	        howsimilar[i] = 0;
-	      }
-        }
-//console.log(howsimilar);
-        let maxval = Math.max(...howsimilar);
-        if (maxval >= this.similarityThreshold) {
-          matchedword = this.mywords[howsimilar.indexOf(maxval)];
-        }
-      }
-	  return matchedword;
-	}
-
-	#saveToStorage() {
-		localStorage.setItem("numPlayers", this.numPlayers);
-		localStorage.setItem("gotPlayers", this.gotPlayers);
-		localStorage.setItem("playerNames", JSON.stringify(this.playerNames));
-		localStorage.setItem("playerCharacters", JSON.stringify(this.playerCharacters));
-		localStorage.setItem("act", this.act);
-		localStorage.setItem("whodoneit", this.whodoneit);
-	}
-	#loadFromStorage() {
-		let numPlayers = localStorage.getItem("numPlayers");
-		this.numPlayers = parseInt(numPlayers ? numPlayers : this.numPlayers);
-		let gotPlayers = localStorage.getItem("gotPlayers");
-		this.gotPlayers = parseInt(gotPlayers ? gotPlayers : this.gotPlayers);
-        let playerNames = JSON.parse(localStorage.getItem("playerNames"));
-		this.playerNames = playerNames ? playerNames : this.playerNames;
-        let playerCharacters = JSON.parse(localStorage.getItem("playerCharacters"));
-		this.playerCharacters = playerCharacters ? playerCharacters : this.playerCharacters;
-		let act = localStorage.getItem("act");
-		this.act = parseInt(act ? act : this.act);
-		let whodoneit = localStorage.getItem("whodoneit");
-		this.whodoneit = parseInt(whodoneit ? whodoneit : this.whodoneit);
-	}
-	#saveSettings() {
-		//localStorage.setItem("numPlayers", this.numPlayers);
-		//localStorage.setItem("act", this.act);
-	}
-	#loadSettings() {
-		//let numPlayers = localStorage.getItem("numPlayers");
-		//this.numPlayers = numPlayers ? numPlayers : this.numPlayers;
-		//let act = localStorage.getItem("act");
-		//this.act = act ? act : this.act;
-	}
-
-}
-
-
 window.onload = (function() {
 	var mystery = new MysteryHost();
+
+	//let aboutbutton = document.getElementById("mhabout");
+    //if (aboutbutton) { aboutbutton.addEventListener("click",() => showAbout()); }
+
 });
 </script>
 
