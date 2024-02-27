@@ -1,0 +1,11 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/mamapnll/repositories/MysteryHost/
+#    - /bin/cp -r * $DEPLOYPATH
+    - /bin/cp -R css $DEPLOYPATH
+    - /bin/cp -R img $DEPLOYPATH
+    - /bin/cp -R js $DEPLOYPATH
+    - /bin/cp -r index.html $DEPLOYPATH
+    - /bin/cp -r robots.txt $DEPLOYPATH
+    - /bin/cp -r humans.txt $DEPLOYPATH
