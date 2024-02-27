@@ -31,7 +31,35 @@ class MysteryHost {
 			document.body.append(addme);
 		}
 		let resetbutton = document.getElementById("mhreset");
-        resetbutton.addEventListener("click",() => this.confirmReset());
+        //resetbutton.addEventListener("click",() => this.confirmReset());
+
+/*        //add dialog box
+		if (!document.getElementById("mhconfirm")) {
+			let addme = document.createElement("dialog");
+			addme.id = "mhreset";
+        <!-- Simple pop-up dialog box -->
+<dialog id="dialog">
+  <form method="dialog">
+    <button type="submit">Close</button>
+  </form>
+</dialog>
+*/
+        const resetModal = document.querySelector('#mhresetmodal');
+        const resetConfirm = document.querySelector('#mhresetmodal .reset');
+        const closeButton = document.querySelector('#mhresetmodal .continue, #mhresetmodal .close');
+
+        resetbutton.addEventListener("click",() => {
+            resetModal.showModal();
+        });
+        let mh=this;
+        closeButton.addEventListener('click', () => {
+            resetModal.close();
+        });
+        resetConfirm.addEventListener('click', () => {
+            resetModal.close();
+            mh.resetGame();
+        });
+
 
 
 	  this.init();
@@ -163,7 +191,7 @@ class MysteryHost {
 
 
 	getPlayers() {
-	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>!<br/>How many guests are there?";
+	  this.instructionDiv.innerHTML = "Welcome to this <span class='spooky'>Murder Mystery</span>! Please get out your copy of \"Complete Murder Mystery Night\"<br/><br/>How many guests are there?";
 	  this.wordDiv.innerHTML = "<input type='number' name='numPlayers' id='numPlayers' min='3' max='10'/>";
 	  this.buttonDiv.innerHTML = "<input type='button' class='start' value='Begin the Game'/>";
       let np = document.getElementById("numPlayers");
@@ -260,7 +288,7 @@ class MysteryHost {
       if (b5) { b5.addEventListener("click",() => this.revealMurderer(thisplayer)); }
     }
     revealMurderer(thisplayer) {
-      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "You <span class='spooky'>are the murderer</span>" : "You <span class='green'>are not</span> the murderer";
+      this.instructionDiv.innerHTML = thisplayer==this.whodoneit ? "<u>You <span class='spooky'>are the murderer</span></u>" : "You <span class='green'>are not</span> the murderer";
 	  this.wordDiv.innerHTML = "";
 	  this.buttonDiv.innerHTML = "<input type='button' class='ok' value='OK'/>";
       let b6 = this.buttonDiv.querySelector("input.ok");
@@ -360,9 +388,14 @@ class MysteryHost {
     }
 
 	confirmReset() {
+/*
 	  if (confirm("Reset the game?")) {
 	    this.resetGame();
 	  }
+*/
+
+
+
 	}
 	resetGame() {
       localStorage.clear();

@@ -258,6 +258,51 @@ button {
 
 }
 
+#mhresetmodal {
+  position:relative;
+  padding:28px 8px 8px 8px;
+
+}
+#mhresetmodal button.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size:15px;
+  margin:0;
+  padding:5px;
+  border:0;
+  border-radius:0;
+  width:auto;
+  background:transparent;
+}
+#mhresetmodal button.close:hover {
+  box-shadow: none;
+  text-shadow: 0 0 4px black;
+}
+#mhresetmodal .text {
+  font-weight:bold;
+}
+#mhresetmodal form {
+}
+#mhresetmodal button {
+  text-align:left;
+  width: initial;
+  display:block;
+  margin: 0.5em;
+}
+#mhresetmodal button:hover {
+  box-shadow: 2px 2px 2px #aaa;
+}
+#mhresetmodal button.reset {
+  border-color:red;
+  color:darkred;
+}
+#mhresetmodal button.continue {
+  border-color:blue;
+  color: darkblue;
+}
+
+
 #menu-button {
   position: absolute;
   top:0;
@@ -333,6 +378,16 @@ a.external-link:after {
     <div></div>
   </div>
 -->
+
+  <dialog id="mhresetmodal">
+    <button type="close" class="close">&#10006;</button>
+    <form method="dialog">
+      <div class="text">Reset Game and Start Over?</div>
+      <button type="submit" class="reset">&#8635; Yes, Reset Game</button>
+      <button type="submit" class="continue">&#8594; No, Continue with the Current Game</button>
+    </form>
+  </dialog>
+
   <div id="mysteryhost" class="container">
     <form id="mhform" onsubmit="return false;">
     <img src="img/Loading_icon.gif"/>
